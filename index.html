@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Cartoon Shorts Maker</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;background:#10131b;color:#f5f6fa;
+  font-family:Arial,sans-serif;padding:20px;
+}
+.app{max-width:600px;margin:auto}
+h1{text-align:center;color:#8b9dff}
+.sub{text-align:center;color:#b4bacb}
+.card{
+  background:#1c2230;padding:18px;border-radius:16px;
+  margin:18px 0;border:1px solid #343c50;
+}
+label{display:block;margin:14px 0 7px}
+input,textarea,select{
+  width:100%;padding:13px;border-radius:9px;
+  border:1px solid #48516a;background:#111722;
+  color:white;font-size:15px;
+}
+textarea{min-height:100px;resize:vertical}
+button{
+  width:100%;padding:14px;border:0;border-radius:10px;
+  background:#7588ff;color:white;font-size:16px;
+  font-weight:bold;margin-top:14px;
+}
+.secondary{background:#30394c}
+.note{color:#c2c8d7;font-size:13px;line-height:1.6}
+#status{white-space:pre-wrap;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>🎬 AI Cartoon Shorts Maker</h1>
+<p class="sub">এক ভিডিও থেকে আলাদা Shorts তৈরির ড্যাশবোর্ড</p>
+
+<div class="card">
+<h3>① YouTube ভিডিও থেকে Shorts</h3>
+<p class="note">নিজের বা ব্যবহারের অনুমতি থাকা ভিডিওর লিংক ব্যবহার করো।</p>
+<label>YouTube ভিডিও লিংক</label>
+<input id="ytLink" type="url" placeholder="https://www.youtube.com/watch?v=...">
+<button onclick="checkLink()">লিংক যাচাই</button>
+<p id="linkStatus" class="note"></p>
+</div>
+
+<div class="card">
+<h3>② নিজের ভিডিও আপলোড</h3>
+<label>ভিডিও ফাইল নির্বাচন করো</label>
+<input id="videoFile" type="file" accept="video/*">
+<p id="fileStatus" class="note">এখনো কোনো ভিডিও নির্বাচন করা হয়নি।</p>
+</div>
+
+<div class="card">
+<h3>③ AI দিয়ে নতুন কার্টুন</h3>
+<label>তোমার প্রম্পট</label>
+<textarea id="prompt" placeholder="যেমন: একটি ছোট্ট বিড়ালের মজার অ্যাডভেঞ্চার..."></textarea>
+<p class="note">এই অংশটি পরে AI ভিডিও জেনারেশন সার্ভিসের সঙ্গে যুক্ত করা হবে।</p>
+</div>
+
+<div class="card">
+<h3>④ Shorts সেটিংস</h3>
+<label>ক্লিপের সংখ্যা</label>
+<select id="count">
+<option value="10">১০টি আলাদা ক্লিপ</option>
+</select>
+<label>প্রতিটি ক্লিপের দৈর্ঘ্য</label>
+<select id="duration">
+<option value="10">১০ সেকেন্ড</option>
+<option value="15">১৫ সেকেন্ড</option>
+</select>
+<label>সর্বোচ্চ ভিডিও রেজোলিউশন</label>
+<select id="quality">
+<option value="1080">1080p — Full HD</option>
+<option value="720">720p — HD</option>
+<option value="480">480p — SD</option>
+</select>
+<button onclick="startJob()">ক্লিপ তৈরির কাজ শুরু</button>
+<p id="status" class="note"></p>
+</div>
+
+<p class="note">
+নোট: এই প্রথম সংস্করণটি ইন্টারফেস। প্রকৃত ক্লিপ তৈরি, ভিডিও ডাউনলোড,
+AI জেনারেশন এবং এক্সপোর্ট চালু করতে ভিডিও প্রসেসিং ইঞ্জিন সংযুক্ত করতে হবে।
+</p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function checkLink(){
+  const link = $("ytLink").value.trim();
+  let url;
+  try {
+    url = new URL(link);
+  } catch {
+    $("linkStatus").textContent = "সঠিক ভিডিও লিংক দাও।";
+    return;
+  }
+
+  const host = url.hostname.replace(/^www\./,"");
+  const validHosts = ["youtube.com","m.youtube.com","youtu.be"];
+
+  if(!validHosts.includes(host)){
+    $("linkStatus").textContent = "এটি স্বীকৃত YouTube লিংক নয়।";
+    return;
+  }
+
+  $("linkStatus").textContent =
+    "লিংকের ফরম্যাট ঠিক আছে। ভিডিও প্রসেসিং ইঞ্জিন এখনো যুক্ত করা হয়নি।";
+}
+
+$("videoFile").addEventListener("change", function(){
+  const file = this.files[0];
+  $("fileStatus").textContent = file
+    ? "নির্বাচিত: " + file.name +
+      " (" + (file.size / 1024 / 1024).toFixed(1) + " MB)"
+    : "এখনো কোনো ভিডিও নির্বাচন করা হয়নি।";
+});
+
+function startJob(){
+  const file = $("videoFile").files[0];
+  const link = $("ytLink").value.trim();
+  const prompt = $("prompt").value.trim();
+
+  if(!file && !link && !prompt){
+    $("status").textContent =
+      "প্রথমে YouTube লিংক দাও, ভিডিও আপলোড করো অথবা AI প্রম্পট লেখো।";
+    return;
+  }
+
+  if(link && !file && !prompt){
+    $("status").textContent =
+      "লিংক দেওয়া হয়েছে। প্রকৃত ভিডিও প্রসেসিং চালু করতে অনুমোদিত উৎস ও প্রসেসিং ইঞ্জিন যুক্ত করতে হবে।";
+    return;
+  }
+
+  if(file){
+    $("status").textContent =
+      "ভিডিও নির্বাচন সফল হয়েছে। পরের ধাপে ভিডিও প্রসেসর যুক্ত করে ১০টি আলাদা ক্লিপ তৈরি করব।";
+    return;
+  }
+
+  $("status").textContent =
+    "প্রম্পট সংরক্ষণের জন্য প্রস্তুত। AI ভিডিও জেনারেটর এখনো সংযুক্ত নয়।";
+}
+</script>
+</body>
+</html>
