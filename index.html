@@ -349,7 +349,9 @@ $("makeBtn").addEventListener("click", async () => {
 
       status("MP4 ক্লিপ " + (i+1) + "/" + count + " তৈরি হচ্ছে...");
       $("bar").style.width = (i/count*100) + "%";
-
+while (engine.isRunning()) {
+  await new Promise(resolve => setTimeout(resolve, 100));
+        }
       await engine.run(
         "-ss",start.toFixed(3),
         "-i",inputName,
