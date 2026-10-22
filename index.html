@@ -2,68 +2,58 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cartoon Shorts Maker</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#101322;color:#fff;font-family:Arial,sans-serif}
 header{text-align:center;padding:22px;background:#1b2037}
 h1{font-size:24px;color:#a8b2ff}
-main{max-width:700px;margin:auto;padding:15px}
+main{max-width:720px;margin:auto;padding:15px}
 .card{background:#1b2037;padding:17px;border-radius:13px;margin-bottom:16px}
 label{display:block;margin:13px 0 7px}
 input,select,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #485071;background:#101629;color:white}
-button{border:0;border-radius:8px;padding:12px;background:#6878ff;color:white;font-weight:bold;margin-top:12px;width:100%;font-size:15px}
+button{border:0;border-radius:8px;padding:13px;background:#6878ff;color:white;font-weight:bold;margin-top:12px;width:100%;font-size:15px}
 button:disabled{opacity:.5}
 .note{font-size:13px;color:#c8cce1;line-height:1.6}
-video{width:100%;max-height:350px;margin-top:12px;background:#000}
+video{width:100%;margin-top:12px;background:#000;border-radius:8px}
 #status{white-space:pre-wrap;padding:12px;background:#101629;border-radius:8px;margin-top:12px;line-height:1.6}
 .clip{background:#101629;padding:12px;border-radius:9px;margin-top:12px;overflow-wrap:anywhere}
-.clip a{color:#b6c0ff}
-.clip textarea{margin-top:8px}
+.clip a{color:#b6c0ff;display:inline-block;margin-top:10px}
 </style>
 </head>
 <body>
 <header>
 <h1>🎬 Cartoon Shorts Maker</h1>
-<p>HD ক্লিপ • টাইটেল • হ্যাশট্যাগ</p>
+<p>16:9 ভিডিও • HD ক্লিপ • টাইটেল ও হ্যাশট্যাগ</p>
 </header>
 
 <main>
 <section class="card">
-<h2>১. ভিডিও নির্বাচন</h2>
-
+<h2>ভিডিও নির্বাচন</h2>
 <label>ফোন থেকে ভিডিও আপলোড</label>
 <input type="file" id="videoFile" accept="video/*">
 <video id="preview" controls playsinline hidden></video>
 
 <label>YouTube ভিডিও লিংক</label>
-<input type="url" id="youtubeUrl"
-placeholder="YouTube লিংক এখানে পেস্ট করো">
-<p class="note">
-YouTube লিংকের মাধ্যমে সরাসরি ক্লিপ তৈরি করার সার্ভার এখনও
-সংযুক্ত নেই। আপাতত ফোন থেকে ভিডিও আপলোড করে কাজ করো।
-</p>
+<input type="url" id="youtubeUrl" placeholder="YouTube লিংক পেস্ট করো">
+<p class="note">এই সংস্করণে YouTube লিংক থেকে সরাসরি ভিডিও প্রসেস করার সার্ভার এখনও যুক্ত নেই।</p>
 
-<label>প্রতিটি ক্লিপের দৈর্ঘ্য</label>
+<label>ক্লিপের দৈর্ঘ্য</label>
 <select id="duration">
 <option value="8">৮ সেকেন্ড</option>
 <option value="10" selected>১০ সেকেন্ড</option>
 <option value="15">১৫ সেকেন্ড</option>
 </select>
 
-<label>ভিডিও রেজুলেশন</label>
+<label>ভিডিও রেজুলেশন (16:9)</label>
 <select id="resolution">
-<option value="480">480p — ছোট ফাইল</option>
-<option value="720" selected>720p — HD</option>
-<option value="1080">1080p — Full HD</option>
+<option value="480">854 × 480 — 480p</option>
+<option value="720" selected>1280 × 720 — 720p</option>
+<option value="1080">1920 × 1080 — 1080p</option>
 </select>
-<p class="note">
-ভিডিওর আসল রেজুলেশন কম হলে 1080p নির্বাচন করলেও
-আসল ডিটেইল বাড়বে না।
-</p>
 
-<label>কতটি ক্লিপ তৈরি করবে?</label>
+<label>ক্লিপের সংখ্যা</label>
 <select id="count">
 <option value="3">৩টি ক্লিপ</option>
 <option value="5">৫টি ক্লিপ</option>
@@ -71,396 +61,284 @@ YouTube লিংকের মাধ্যমে সরাসরি ক্লি
 <option value="10" selected>১০টি ক্লিপ</option>
 </select>
 
-<label>ভিডিওর বিষয় / কীওয়ার্ড</label>
-<input id="topic" placeholder="যেমন: Funny Cartoon, Mystery, Cat Story">
+<label>ভিডিওর বিষয়</label>
+<input id="topic" placeholder="যেমন: Funny Cartoon, Cat Story">
 
 <button id="make">✂️ ক্লিপ তৈরি করো</button>
-<div id="status">প্রথমে একটি ভিডিও নির্বাচন করো।</div>
+<div id="status">প্রথমে ভিডিও নির্বাচন করো।</div>
 <div id="results"></div>
 </section>
 </main>
 
 <script>
-const fileInput = document.getElementById("videoFile");
-const video = document.getElementById("preview");
-const statusBox = document.getElementById("status");
-const results = document.getElementById("results");
-const makeButton = document.getElementById("make");
+const fileInput=document.getElementById('videoFile');
+const video=document.getElementById('preview');
+const statusBox=document.getElementById('status');
+const results=document.getElementById('results');
+const makeButton=document.getElementById('make');
 
-let file = null;
-let videoURL = null;
-let busy = false;
-const downloadURLs = [];
+let file=null, videoURL=null, busy=false;
+let downloadURLs=[];
 
-function status(message) {
-  statusBox.textContent = message;
+function setStatus(t){statusBox.textContent=t}
+
+function clearResults(){
+ results.replaceChildren();
+ downloadURLs.forEach(u=>URL.revokeObjectURL(u));
+ downloadURLs=[];
 }
 
-function clearResults() {
-  results.replaceChildren();
-  downloadURLs.forEach(url => URL.revokeObjectURL(url));
-  downloadURLs.length = 0;
-}
+fileInput.addEventListener('change',()=>{
+ file=fileInput.files[0];
+ clearResults();
+ if(videoURL)URL.revokeObjectURL(videoURL);
+ videoURL=null;
 
-function seekTo(time) {
-  return new Promise((resolve, reject) => {
-    if (Math.abs(video.currentTime - time) < 0.04) {
-      resolve();
-      return;
-    }
+ if(!file){
+  video.hidden=true;
+  setStatus('ভিডিও নির্বাচন করো।');
+  return;
+ }
 
-    const cleanup = () => {
-      video.removeEventListener("seeked", onSeeked);
-      video.removeEventListener("error", onError);
-    };
-    const onSeeked = () => {
-      cleanup();
-      resolve();
-    };
-    const onError = () => {
-      cleanup();
-      reject(new Error("ভিডিওর নির্দিষ্ট অংশ লোড হয়নি।"));
-    };
+ videoURL=URL.createObjectURL(file);
+ video.src=videoURL;
+ video.hidden=false;
 
-    video.addEventListener("seeked", onSeeked);
-    video.addEventListener("error", onError);
-    video.currentTime = time;
-  });
-}
-
-fileInput.addEventListener("change", () => {
-  file = fileInput.files && fileInput.files[0];
-  clearResults();
-
-  if (videoURL) URL.revokeObjectURL(videoURL);
-  videoURL = null;
-
-  if (!file) {
-    video.hidden = true;
-    status("একটি ভিডিও নির্বাচন করো।");
-    return;
-  }
-
-  videoURL = URL.createObjectURL(file);
-  video.src = videoURL;
-  video.hidden = false;
-
-  video.onloadedmetadata = () => {
-    status(
-      "ভিডিও লোড হয়েছে।\n" +
-      "আসল রেজুলেশন: " + video.videoWidth + " × " +
-      video.videoHeight + "\n" +
-      "দৈর্ঘ্য: " + Math.floor(video.duration) + " সেকেন্ড।"
-    );
-  };
+ video.onloadedmetadata=()=>{
+  setStatus(
+   'ভিডিও লোড হয়েছে।\nমূল রেজুলেশন: '+
+   video.videoWidth+' × '+video.videoHeight+
+   '\nদৈর্ঘ্য: '+Math.floor(video.duration)+' সেকেন্ড'
+  );
+ };
 });
 
-async function createClip(start, duration, index, targetHeight) {
-  await seekTo(start);
-
-  const capture = video.captureStream || video.mozCaptureStream;
-  if (!capture) {
-    throw new Error("এই ব্রাউজারে ভিডিও ক্যাপচার সমর্থিত নয়। Chrome-এ চেষ্টা করো।");
+function seekTo(time){
+ return new Promise((resolve,reject)=>{
+  if(Math.abs(video.currentTime-time)<0.04){
+   resolve();return;
   }
+  const cleanup=()=>{
+   video.removeEventListener('seeked',onSeeked);
+   video.removeEventListener('error',onError);
+  };
+  const onSeeked=()=>{cleanup();resolve()};
+  const onError=()=>{cleanup();reject(Error('ভিডিও লোড হয়নি।'))};
+  video.addEventListener('seeked',onSeeked);
+  video.addEventListener('error',onError);
+  video.currentTime=time;
+ });
+}
 
-  if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) {
-    throw new Error("ব্রাউজার প্রয়োজনীয় ভিডিও রেকর্ডিং সমর্থন করছে না।");
+function recordClip(start,duration,index){
+ return new Promise(async(resolve,reject)=>{
+  let recorder=null,timer=null,finished=false;
+  let chunks=[];
+
+  const stopTracks=stream=>{
+   if(stream)stream.getTracks().forEach(t=>{
+    try{t.stop()}catch(e){}
+   });
+  };
+
+  try{
+   await seekTo(start);
+
+   const capture=video.captureStream||video.mozCaptureStream;
+   if(!capture||!window.MediaRecorder){
+    throw Error('এই ব্রাউজার ভিডিও রেকর্ডিং সমর্থন করছে না। Chrome-এ চেষ্টা করো।');
+   }
+
+   const stream=capture.call(video);
+   const types=[
+    'video/webm;codecs=vp9,opus',
+    'video/webm;codecs=vp8,opus',
+    'video/webm'
+   ];
+   const mimeType=types.find(t=>MediaRecorder.isTypeSupported(t));
+
+   if(!mimeType){
+    stopTracks(stream);
+    throw Error('সমর্থিত ভিডিও ফরম্যাট পাওয়া যায়নি।');
+   }
+
+   const recorderOptions={mimeType};
+   recorderOptions.videoBitsPerSecond=8000000;
+   recorder=new MediaRecorder(stream,recorderOptions);
+
+   const fail=error=>{
+    if(finished)return;
+    finished=true;
+    clearTimeout(timer);
+    video.pause();
+    if(recorder&&recorder.state!=='inactive'){
+     try{recorder.stop()}catch(e){}
+    }
+    stopTracks(stream);
+    reject(error);
+   };
+
+   recorder.ondataavailable=e=>{
+    if(e.data&&e.data.size>0)chunks.push(e.data);
+   };
+
+   recorder.onerror=()=>fail(Error('ভিডিও রেকর্ডিংয়ে সমস্যা হয়েছে।'));
+
+   recorder.onstop=()=>{
+    clearTimeout(timer);
+    video.pause();
+    stopTracks(stream);
+
+    if(finished)return;
+    finished=true;
+
+    const blob=new Blob(chunks,{type:mimeType});
+    if(!blob.size){
+     reject(Error('ভিডিও খালি হয়েছে। আবার চেষ্টা করো।'));
+     return;
+    }
+    resolve({blob,name:'short-'+(index+1)+'.webm'});
+   };
+
+   video.muted=false;
+   await video.play();
+   recorder.start(250);
+
+   timer=setTimeout(()=>{
+    video.pause();
+    if(recorder.state!=='inactive')recorder.stop();
+   },duration*1000);
+
+  }catch(e){
+   clearTimeout(timer);
+   if(recorder&&recorder.state!=='inactive'){
+    try{recorder.stop()}catch(_){}
+   }
+   reject(e);
   }
+ });
+}
 
-  const sourceWidth = video.videoWidth;
-  const sourceHeight = video.videoHeight;
+function metadata(topic,index){
+ const subject=topic.trim()||'Cartoon Story';
+ const tags=[...new Set([
+  ...subject.split(/\s+/),
+  'Cartoon','Shorts','Animation','YouTubeShorts'
+ ].map(w=>'#'+w.replace(/[^\p{L}\p{N}_]/gu,''))
+ .filter(w=>w.length>1))].slice(0,8);
 
-  if (!sourceWidth || !sourceHeight) {
-    throw new Error("ভিডিওর রেজুলেশন পড়া যায়নি।");
+ return {
+  title:subject+' | Short '+(index+1)+' #Shorts',
+  hashtags:tags.join(' ')
+ };
+}
+
+function addClip(clip,index,topic,resolution){
+ const url=URL.createObjectURL(clip.blob);
+ downloadURLs.push(url);
+
+ const card=document.createElement('div');
+ card.className='clip';
+
+ const heading=document.createElement('h3');
+ heading.textContent='ক্লিপ '+(index+1)+' • '+resolution+'p';
+
+ const player=document.createElement('video');
+ player.controls=true;
+ player.playsInline=true;
+ player.preload='metadata';
+ player.src=url;
+
+ const link=document.createElement('a');
+ link.href=url;
+ link.download=clip.name;
+ link.textContent='⬇️ ভিডিও ডাউনলোড';
+
+ const titleLabel=document.createElement('label');
+ titleLabel.textContent='টাইটেল';
+
+ const title=document.createElement('textarea');
+ title.rows=2;
+ title.value=metadata(topic,index).title;
+
+ const tagsLabel=document.createElement('label');
+ tagsLabel.textContent='হ্যাশট্যাগ';
+
+ const tags=document.createElement('textarea');
+ tags.rows=2;
+ tags.value=metadata(topic,index).hashtags;
+
+ const copy=document.createElement('button');
+ copy.textContent='টাইটেল ও হ্যাশট্যাগ কপি';
+ copy.onclick=async()=>{
+  try{
+   await navigator.clipboard.writeText(title.value+'\n'+tags.value);
+   copy.textContent='কপি হয়েছে ✓';
+  }catch(e){
+   title.focus();title.select();
+   copy.textContent='টাইটেল নির্বাচন করা হয়েছে—কপি করো';
   }
+ };
 
-  // Portrait ও landscape ভিডিওর অনুপাত বজায় রাখা
-  const scale = targetHeight / Math.min(sourceWidth, sourceHeight);
-  const canvas = document.createElement("canvas");
+ card.append(heading,player,link,titleLabel,title,tagsLabel,tags,copy);
+ results.appendChild(card);
+}
 
-  canvas.width = Math.max(2, Math.round(sourceWidth * scale / 2) * 2);
-  canvas.height = Math.max(2, Math.round(sourceHeight * scale / 2) * 2);
+makeButton.addEventListener('click',async()=>{
+ if(busy)return;
 
-  const ctx = canvas.getContext("2d", { alpha: false });
-  if (!ctx) throw new Error("ক্যানভাস তৈরি করা যায়নি।");
-
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  const sourceStream = capture.call(video);
-  const canvasStream = canvas.captureStream(30);
-
-  const tracks = [
-    ...canvasStream.getVideoTracks(),
-    ...sourceStream.getAudioTracks()
-  ];
-  const combinedStream = new MediaStream(tracks);
-
-  const mimeCandidates = [
-    "video/webm;codecs=vp8,opus",
-    "video/webm;codecs=vp9,opus",
-    "video/webm"
-  ];
-
-  const mimeType = mimeCandidates.find(type =>
-    MediaRecorder.isTypeSupported(type)
+ if(!file||!videoURL||!Number.isFinite(video.duration)){
+  const link=document.getElementById('youtubeUrl').value.trim();
+  setStatus(link
+   ?'YouTube লিংক দেওয়া হয়েছে, কিন্তু সরাসরি প্রসেস করার সার্ভার এখনও যুক্ত নেই।'
+   :'আগে ফোন থেকে একটি ভিডিও নির্বাচন করো।'
   );
+  return;
+ }
 
-  if (!mimeType) {
-    tracks.forEach(track => track.stop());
-    throw new Error("সমর্থিত ভিডিও ফরম্যাট পাওয়া যায়নি।");
+ const duration=Number(document.getElementById('duration').value);
+ const count=Number(document.getElementById('count').value);
+ const resolution=Number(document.getElementById('resolution').value);
+ const topic=document.getElementById('topic').value;
+
+ if(video.duration<duration){
+  setStatus('ভিডিওটি নির্বাচিত ক্লিপের চেয়ে ছোট।');
+  return;
+ }
+
+ busy=true;
+ makeButton.disabled=true;
+ clearResults();
+
+ try{
+  const maxStart=video.duration-duration;
+  const starts=[];
+
+  for(let i=0;i<count;i++){
+   starts.push(maxStart*(i/count));
   }
 
-  const bitrates = {
-    480: 2500000,
-    720: 5000000,
-    1080: 8000000
-  };
-
-  return new Promise(async (resolve, reject) => {
-    let recorder;
-    let rafId = 0;
-    let finished = false;
-    const chunks = [];
-    const endTime = Math.min(start + duration, video.duration);
-
-    function cleanup() {
-      if (rafId) cancelAnimationFrame(rafId);
-      video.pause();
-      tracks.forEach(track => {
-        try { track.stop(); } catch (_) {}
-      });
-    }
-
-    function fail(error) {
-      if (finished) return;
-      finished = true;
-      cleanup();
-
-      if (recorder && recorder.state !== "inactive") {
-        try {
-          recorder.stop();
-        } catch (_) {}
-      }
-      reject(error);
-    }
-
-    try {
-      recorder = new MediaRecorder(combinedStream, {
-        mimeType,
-        videoBitsPerSecond: bitrates[targetHeight] || 5000000,
-        audioBitsPerSecond: 128000
-      });
-
-      recorder.ondataavailable = event => {
-        if (event.data && event.data.size > 0) {
-          chunks.push(event.data);
-        }
-      };
-
-      recorder.onerror = () => {
-        fail(new Error("ভিডিও রেকর্ডিংয়ে সমস্যা হয়েছে।"));
-      };
-
-      recorder.onstop = () => {
-        cleanup();
-
-        if (finished) return;
-        finished = true;
-
-        const blob = new Blob(chunks, { type: mimeType });
-        if (!blob.size) {
-          reject(new Error("খালি ভিডিও তৈরি হয়েছে। আবার চেষ্টা করো।"));
-          return;
-        }
-
-        resolve({
-          blob,
-          name: "short-" + (index + 1) + ".webm"
-        });
-      };
-
-      function drawFrame() {
-        if (finished || !recorder || recorder.state === "inactive") {
-          return;
-        }
-
-        try {
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        } catch (_) {}
-
-        if (video.currentTime >= endTime || video.ended) {
-          // শেষ ফ্রেম আঁকার পর রেকর্ডিং বন্ধ
-          if (recorder.state !== "inactive") recorder.stop();
-          return;
-        }
-
-        rafId = requestAnimationFrame(drawFrame);
-      }
-
-      // প্রথম ফ্রেম আগে থেকেই ক্যানভাসে আঁকা হয়েছে
-      recorder.start();
-      await video.play();
-      rafId = requestAnimationFrame(drawFrame);
-
-    } catch (error) {
-      fail(error);
-    }
-  });
-}
-
-function makeMetadata(topic, index) {
-  const clean = topic.trim() || "Cartoon Story";
-  const words = clean.split(/\s+/).filter(Boolean);
-
-  const tags = [
-    ...words,
-    "Cartoon",
-    "Shorts",
-    "Animation",
-    "YouTubeShorts"
-  ]
-  .map(word => "#" + word.replace(/[^\p{L}\p{N}_]/gu, ""))
-  .filter(tag => tag.length > 1);
-
-  return {
-    title: clean + " | Short " + (index + 1) + " #Shorts",
-    hashtags: [...new Set(tags)].slice(0, 8).join(" ")
-  };
-}
-
-function addClipCard(clip, index, topic, resolution) {
-  const url = URL.createObjectURL(clip.blob);
-  downloadURLs.push(url);
-
-  const card = document.createElement("div");
-  card.className = "clip";
-
-  const heading = document.createElement("h3");
-  heading.textContent = "ক্লিপ " + (index + 1) + " • " + resolution + "p";
-
-  const player = document.createElement("video");
-  player.controls = true;
-  player.playsInline = true;
-  player.preload = "metadata";
-  player.src = url;
-  player.style.width = "100%";
-
-  const download = document.createElement("a");
-  download.href = url;
-  download.download = clip.name;
-  download.textContent = "⬇️ ভিডিও ডাউনলোড";
-  download.style.display = "inline-block";
-  download.style.marginTop = "12px";
-
-  const titleLabel = document.createElement("label");
-  titleLabel.textContent = "টাইটেল";
-
-  const title = document.createElement("textarea");
-  title.rows = 2;
-  title.value = makeMetadata(topic, index).title;
-
-  const tagLabel = document.createElement("label");
-  tagLabel.textContent = "হ্যাশট্যাগ";
-
-  const tags = document.createElement("textarea");
-  tags.rows = 2;
-  tags.value = makeMetadata(topic, index).hashtags;
-
-  const copy = document.createElement("button");
-  copy.textContent = "টাইটেল ও হ্যাশট্যাগ কপি";
-
-  copy.onclick = async () => {
-    const text = title.value + "\n" + tags.value;
-
-    try {
-      await navigator.clipboard.writeText(text);
-      copy.textContent = "কপি হয়েছে ✓";
-    } catch (_) {
-      title.focus();
-      title.select();
-      copy.textContent = "টাইটেল নির্বাচন করা হয়েছে—কপি করো";
-    }
-  };
-
-  card.append(
-    heading, player, download,
-    titleLabel, title, tagLabel, tags, copy
-  );
-  results.appendChild(card);
-}
-
-makeButton.addEventListener("click", async () => {
-  if (busy) return;
-
-  if (!file || !videoURL || !Number.isFinite(video.duration)) {
-    const link = document.getElementById("youtubeUrl").value.trim();
-
-    status(link
-      ? "YouTube লিংক পাওয়া গেছে, কিন্তু সরাসরি ক্লিপ তৈরি করতে সার্ভার সংযুক্ত করা বাকি।"
-      : "আগে ফোন থেকে একটি ভিডিও নির্বাচন করো।"
-    );
-    return;
+  for(let i=starts.length-1;i>0;i--){
+   const j=Math.floor(Math.random()*(i+1));
+   [starts[i],starts[j]]=[starts[j],starts[i]];
   }
 
-  const duration = Number(document.getElementById("duration").value);
-  const count = Number(document.getElementById("count").value);
-  const resolution = Number(document.getElementById("resolution").value);
-  const topic = document.getElementById("topic").value;
+  for(let i=0;i<count;i++){
+   setStatus('ক্লিপ তৈরি হচ্ছে '+(i+1)+' / '+count+
+    '\nনির্বাচিত আউটপুট: '+resolution+'p, 16:9'+
+    '\nপেজ খোলা রাখো।');
 
-  if (video.duration < duration) {
-    status("ভিডিওটি নির্বাচিত ক্লিপের চেয়ে ছোট।");
-    return;
+   const clip=await recordClip(starts[i],duration,i);
+   addClip(clip,i,topic,resolution);
   }
 
-  busy = true;
-  makeButton.disabled = true;
-  clearResults();
-
-  try {
-    const maxStart = video.duration - duration;
-
-    // ভিডিওর বিভিন্ন অংশ থেকে ক্লিপ নেওয়া
-    const starts = [];
-    for (let i = 0; i < count; i++) {
-      starts.push(maxStart * (i / count));
-    }
-
-    for (let i = starts.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [starts[i], starts[j]] = [starts[j], starts[i]];
-    }
-
-    for (let i = 0; i < count; i++) {
-      status(
-        "ক্লিপ তৈরি হচ্ছে: " + (i + 1) + " / " + count +
-        "\nরেজুলেশন: " + resolution + "p" +
-        "\nপেজ খোলা রাখো এবং স্ক্রিন লক কোরো না।"
-      );
-
-      const clip = await createClip(
-        starts[i], duration, i, resolution
-      );
-
-      addClipCard(clip, i, topic, resolution);
-    }
-
-    status(
-      "সম্পন্ন! " + count + "টি ক্লিপ তৈরি হয়েছে।" +
-      "\nনির্বাচিত রেজুলেশন: " + resolution + "p" +
-      "\nপ্রতিটি ক্লিপ দেখে ডাউনলোড করো।"
-    );
-
-  } catch (error) {
-    status(
-      "সমস্যা হয়েছে:\n" + (error.message || error) +
-      "\nChrome-এ আবার চেষ্টা করো।"
-    );
-  } finally {
-    busy = false;
-    makeButton.disabled = false;
-  }
+  setStatus('সব ক্লিপ তৈরি হয়েছে। ডাউনলোড করে পরীক্ষা করো।');
+ }catch(e){
+  setStatus('সমস্যা: '+e.message);
+ }finally{
+  busy=false;
+  makeButton.disabled=false;
+ }
 });
 </script>
 </body>
