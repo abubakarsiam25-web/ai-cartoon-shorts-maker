@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -15,13 +14,14 @@ header p{color:#ccd6e5}
 main{max-width:760px;margin:auto;padding:15px}
 .panel{background:#1b2940;border:1px solid #34445e;border-radius:14px;padding:17px;margin-bottom:16px}
 h2{font-size:19px;margin-top:0}
-label{display:block;margin:14px 0 7px}
-input,select,button{font:inherit;width:100%;padding:12px;border-radius:9px}
-input,select{background:#101827;color:white;border:1px solid #536680}
+label{display:block;margin:14px 0 7px;font-weight:bold}
+input,select,button,textarea{font:inherit;width:100%;padding:12px;border-radius:9px}
+input,select,textarea{background:#101827;color:white;border:1px solid #536680}
+textarea{resize:vertical;line-height:1.5}
 button{background:#65e6c2;color:#102037;border:0;font-weight:bold;cursor:pointer;margin-top:12px}
 button:disabled{opacity:.5;cursor:wait}
 video{width:100%;max-height:350px;background:#000;border-radius:10px;margin-top:12px}
-.small{font-size:13px;color:#c6d1e2;line-height:1.6}
+.small{font-size:13px;color:#c6d1e2;line-height:1.6;overflow-wrap:anywhere}
 #status{white-space:pre-wrap;line-height:1.6;color:#ffe19a}
 .progress{height:9px;background:#34445e;border-radius:9px;overflow:hidden;margin-top:12px}
 #bar{height:100%;width:0;background:#65e6c2;transition:width .2s}
@@ -30,23 +30,26 @@ video{width:100%;max-height:350px;background:#000;border-radius:10px;margin-top:
 .actions{display:flex;gap:8px;flex-wrap:wrap}
 .actions a,.actions button{flex:1;min-width:130px}
 a{color:#65e6c2}
+hr{border:0;border-top:1px solid #34445e;margin:18px 0}
 </style>
 </head>
 <body>
 <header>
 <h1>🎬 Cartoon Shorts Maker</h1>
-<p>ভিডিও কাটুন, MP4 তৈরি করুন এবং ডাউনলোড করুন</p>
+<p>ভিডিও কাটুন, নতুন AI ভিডিও তৈরি করুন এবং MP4 ডাউনলোড করুন</p>
 </header>
+
 <main>
 <section class="panel">
-<h2>১. ভিডিও নির্বাচন</h2>
-<label for="videoFile">ফোন থেকে ভিডিও আপলোড করুন</label>
+<h2>১. ভিডিও থেকে ক্লিপ তৈরি</h2>
+
+<label for="videoFile">ফোন থেকে ভিডিও নির্বাচন করুন</label>
 <input id="videoFile" type="file" accept="video/*">
 <video id="preview" controls playsinline hidden></video>
-<p id="videoInfo" class="small"></p>
+<p id="videoInfo" class="small">এখনও ভিডিও নির্বাচন করা হয়নি।</p>
 
-<label for="topic">ভিডিওর বিষয়</label>
-<input id="topic" maxlength="100" placeholder="যেমন: রহস্যময় কার্টুন">
+<label for="topic">ভিডিওর বিষয় বা নাম</label>
+<input id="topic" maxlength="100" placeholder="যেমন: Funny Cartoon">
 
 <label for="duration">প্রতিটি ক্লিপের দৈর্ঘ্য</label>
 <select id="duration">
@@ -63,22 +66,70 @@ a{color:#65e6c2}
 <option value="10">১০টি</option>
 </select>
 
-<label for="resolution">রেজোলিউশন</label>
-<select id="resolution">
-<option value="480">480p</option>
-<option value="720" selected>720p</option>
-<option value="1080">1080p</option>
+<label for="platform">কোন প্ল্যাটফর্মের জন্য?</label>
+<select id="platform">
+<option value="tiktok">TikTok — 9:16</option>
+<option value="facebook-reels">Facebook Reels — 9:16</option>
+<option value="youtube-shorts">YouTube Shorts — 9:16</option>
+<option value="instagram-reels">Instagram Reels — 9:16</option>
+<option value="youtube-landscape">YouTube সাধারণ ভিডিও — 16:9</option>
+<option value="facebook-feed">Facebook Feed — 4:5</option>
+<option value="instagram-square">Instagram Square — 1:1</option>
 </select>
 
-<button id="makeBtn" type="button">MP4 ক্লিপ তৈরি করুন</button>
+<label for="resolution">রেজোলিউশন</label>
+<select id="resolution">
+<option value="480">480p — কম প্রসেসিং</option>
+<option value="720" selected>720p — প্রস্তাবিত</option>
+<option value="1080">1080p — বেশি প্রসেসিং</option>
+</select>
+
+<label for="fps">ফ্রেম রেট (FPS)</label>
+<select id="fps">
+<option value="24">24 FPS</option>
+<option value="30" selected>30 FPS — প্রস্তাবিত</option>
+<option value="60">60 FPS</option>
+</select>
+
+<button id="makeBtn" type="button">✂️ MP4 ক্লিপ তৈরি করুন</button>
 <div class="progress"><div id="bar"></div></div>
-<p id="status">ভিডিও আপলোড করে শুরু করুন।</p>
-<p class="small">প্রথমবার ইঞ্জিন ডাউনলোড হতে সময় ও ইন্টারনেট লাগবে। বড় ভিডিও বা উচ্চ রেজোলিউশন ফোনের মেমোরি শেষ করে দিতে পারে। প্রথমে ছোট ভিডিও ও 480p ব্যবহার করুন।</p>
+<p id="status" aria-live="polite">ভিডিও নির্বাচন করে শুরু করুন।</p>
+
+<p class="small">
+ক্লিপগুলো মূল ভিডিওর বিভিন্ন সময় থেকে সমান ব্যবধানে নেওয়া হবে।
+এই অংশটি নিজে থেকে মজার দৃশ্য শনাক্ত করে না।
+বড় ভিডিওতে ফোনের মেমোরি ও প্রসেসিং ক্ষমতা অনুযায়ী সময় লাগতে পারে।
+</p>
 </section>
 
 <section class="panel">
-<h2>২. তৈরি করা ভিডিও</h2>
-<div id="results">এখানে ক্লিপ দেখা যাবে।</div>
+<h2>২. AI Prompt থেকে নতুন ভিডিও</h2>
+<p class="small">
+এখানে দৃশ্যের বর্ণনা লিখুন। বাটনে চাপ দিলে Prompt কপি করে একটি বাইরের AI ভিডিও সাইট খোলার চেষ্টা করবে। সেখানে Prompt পেস্ট করে ভিডিও তৈরি করতে হবে।
+</p>
+
+<label for="aiPrompt">কী ধরনের ভিডিও চান?</label>
+<textarea id="aiPrompt" rows="6" placeholder="A funny colorful 3D cartoon cat tries to bake a cake, makes a funny mistake, bright colors, playful animation, vertical 9:16 video, no text."></textarea>
+
+<label for="aiPlatform">AI ভিডিওর অনুপাত</label>
+<select id="aiPlatform">
+<option value="9:16">TikTok / Reels / Shorts — 9:16</option>
+<option value="16:9">YouTube Landscape — 16:9</option>
+<option value="1:1">Square — 1:1</option>
+</select>
+
+<button id="aiBtn" type="button">✨ Prompt কপি করে AI ভিডিও সাইট খোলো</button>
+<p id="aiStatus" class="small" aria-live="polite"></p>
+<a href="https://www.freevideoai.org/" target="_blank" rel="noopener noreferrer">AI ভিডিও সাইট সরাসরি খোলো</a>
+
+<p class="small">
+AI সাইটে Prompt পেস্ট করে Generate করতে হবে। সাইটের ফ্রি সুবিধা, দৈর্ঘ্য, রেজোলিউশন ও উপলভ্যতা পরিবর্তিত হতে পারে। AI ভিডিও এখানে সরাসরি তৈরি হয় না।
+</p>
+</section>
+
+<section class="panel">
+<h2>৩. তৈরি করা ক্লিপ</h2>
+<div id="results">এখানে তৈরি হওয়া ভিডিও দেখা যাবে।</div>
 </section>
 </main>
 
@@ -87,6 +138,7 @@ a{color:#65e6c2}
 "use strict";
 
 const $ = id => document.getElementById(id);
+
 let selectedFile = null;
 let videoDuration = 0;
 let engine = null;
@@ -99,21 +151,52 @@ function status(message){
   $("status").textContent = message;
 }
 
+function formatTime(seconds){
+  const s = Math.max(0,Math.floor(seconds));
+  const h = Math.floor(s/3600);
+  const m = Math.floor((s%3600)/60);
+  const sec = s%60;
+  return h
+    ? `${h}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`
+    : `${m}:${String(sec).padStart(2,"0")}`;
+}
+
+function safeName(text){
+  return (text || "cartoon-shorts")
+    .trim()
+    .replace(/[^\p{L}\p{N}_-]+/gu,"-")
+    .replace(/^-+|-+$/g,"")
+    .slice(0,50) || "cartoon-shorts";
+}
+
 function clearOutputs(){
   outputURLs.forEach(url => URL.revokeObjectURL(url));
   outputURLs = [];
   $("results").replaceChildren();
+  $("results").textContent = "এখানে তৈরি হওয়া ভিডিও দেখা যাবে।";
 }
 
-$("videoFile").addEventListener("change", () => {
+$("videoFile").addEventListener("change",() => {
+  if(busy) return;
+
   const file = $("videoFile").files[0];
   selectedFile = null;
   videoDuration = 0;
   clearOutputs();
 
+  const preview = $("preview");
+  preview.pause();
+  preview.hidden = true;
+  preview.removeAttribute("src");
+  preview.load();
+
+  if(previewURL){
+    URL.revokeObjectURL(previewURL);
+    previewURL = null;
+  }
+
   if(!file){
-    $("videoInfo").textContent = "";
-    $("preview").hidden = true;
+    $("videoInfo").textContent = "এখনও ভিডিও নির্বাচন করা হয়নি।";
     return;
   }
 
@@ -123,60 +206,51 @@ $("videoFile").addEventListener("change", () => {
     return;
   }
 
-  if(file.size > 250 * 1024 * 1024){
-    status("ভিডিও 250 MB-এর বেশি। ছোট ভিডিও ব্যবহার করুন।");
-    $("videoInfo").textContent =
-      "ফাইলের আকার: " + (file.size/1048576).toFixed(1) + " MB";
-    $("preview").hidden = true;
-    return;
-  }
-
   selectedFile = file;
-  if(previewURL) URL.revokeObjectURL(previewURL);
   previewURL = URL.createObjectURL(file);
-
-  const preview = $("preview");
   preview.src = previewURL;
   preview.hidden = false;
 
   $("videoInfo").textContent =
-    "ফাইল: " + file.name + " | " +
-    (file.size/1048576).toFixed(2) + " MB";
+    "ফাইল: "+file.name+
+    " | সাইজ: "+(file.size/1048576).toFixed(1)+" MB"+
+    "\nভিডিওর দৈর্ঘ্য পড়া হচ্ছে...";
 
   preview.onloadedmetadata = () => {
     videoDuration = preview.duration;
 
     if(!Number.isFinite(videoDuration) || videoDuration <= 0){
       selectedFile = null;
-      status("ভিডিওর দৈর্ঘ্য পড়া যায়নি। অন্য ভিডিও দিন।");
+      status("ভিডিওর দৈর্ঘ্য পড়া যায়নি। অন্য ভিডিও চেষ্টা করুন।");
       return;
     }
 
     $("videoInfo").textContent =
-      "ফাইল: " + file.name +
-      " | " + (file.size/1048576).toFixed(2) + " MB" +
-      " | দৈর্ঘ্য: " + videoDuration.toFixed(1) + " সেকেন্ড";
+      "ফাইল: "+file.name+
+      " | সাইজ: "+(file.size/1048576).toFixed(1)+" MB"+
+      " | দৈর্ঘ্য: "+formatTime(videoDuration);
 
     status("ভিডিও প্রস্তুত। এখন ক্লিপ তৈরি করতে পারেন।");
   };
 
   preview.onerror = () => {
     selectedFile = null;
-    status("ভিডিওটি খোলা যাচ্ছে না। অন্য ভিডিও ব্যবহার করুন।");
+    status("ভিডিওটি খোলা যাচ্ছে না। অন্য ভিডিও চেষ্টা করুন।");
   };
 });
 
 async function loadFFmpeg(){
-  if(engineReady) return engine;
+  if(engineReady && engine) return engine;
 
   if(!window.FFmpeg || !window.FFmpeg.createFFmpeg){
-    throw new Error("ভিডিও ইঞ্জিন লোড হয়নি। ইন্টারনেট পরীক্ষা করে রিফ্রেশ করুন।");
+    throw new Error("FFmpeg লোড হয়নি। ইন্টারনেট পরীক্ষা করে পেজ রিফ্রেশ করুন।");
   }
 
-  status("ভিডিও ইঞ্জিন ডাউনলোড হচ্ছে...");
+  status("ভিডিও প্রসেসিং ইঞ্জিন লোড হচ্ছে...");
+
   engine = window.FFmpeg.createFFmpeg({
-    log: true,
-    corePath: "https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js"
+    log:false,
+    corePath:"https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js"
   });
 
   await engine.load();
@@ -184,20 +258,25 @@ async function loadFFmpeg(){
   return engine;
 }
 
+function unlinkFile(name){
+  if(!engine) return;
+  try{ engine.FS("unlink",name); }catch(e){}
+}
+
 function makeTitle(topic,index){
-  return (topic.trim() || "Cartoon Shorts") + " - Clip " + (index+1);
+  return (topic.trim() || "Cartoon Shorts")+" - Clip "+(index+1);
 }
 
 function makeTags(topic){
-  const words = (topic || "cartoon shorts").trim()
-    .split(/\s+/).slice(0,3)
-    .map(word => "#" + word.replace(/[^\p{L}\p{N}_]/gu,""))
-    .filter(tag => tag.length > 1);
+  const words = (topic || "cartoon shorts")
+    .trim().split(/\s+/).slice(0,3)
+    .map(word => "#"+word.replace(/[^\p{L}\p{N}_]/gu,""))
+    .filter(tag => tag.length>1);
 
   return [...new Set([...words,"#Shorts","#Cartoon","#Video"])].join(" ");
 }
 
-function addClip(blob,index,topic,start,seconds){
+function addClip(blob,index,topic,start,seconds,platform,fps){
   const url = URL.createObjectURL(blob);
   outputURLs.push(url);
 
@@ -205,7 +284,7 @@ function addClip(blob,index,topic,start,seconds){
   card.className = "clip";
 
   const heading = document.createElement("h3");
-  heading.textContent = "ক্লিপ " + (index+1);
+  heading.textContent = "ক্লিপ "+(index+1);
 
   const player = document.createElement("video");
   player.controls = true;
@@ -217,22 +296,24 @@ function addClip(blob,index,topic,start,seconds){
   const tags = makeTags(topic);
 
   const titleText = document.createElement("p");
-  titleText.textContent = "শিরোনাম: " + title;
+  titleText.textContent = "শিরোনাম: "+title;
 
   const tagText = document.createElement("p");
-  tagText.textContent = "হ্যাশট্যাগ: " + tags;
+  tagText.textContent = "হ্যাশট্যাগ: "+tags;
 
   const info = document.createElement("p");
   info.className = "small";
-  info.textContent = "শুরুর সময়: " + start.toFixed(1) +
-    " সেকেন্ড | দৈর্ঘ্য: " + seconds + " সেকেন্ড | MP4";
+  info.textContent =
+    "শুরুর সময়: "+formatTime(start)+
+    " | দৈর্ঘ্য: "+seconds+" সেকেন্ড"+
+    " | "+platform+" | "+fps+" FPS | MP4";
 
   const actions = document.createElement("div");
   actions.className = "actions";
 
   const link = document.createElement("a");
   link.href = url;
-  link.download = "short-" + (index+1) + ".mp4";
+  link.download = safeName(topic)+"-"+(index+1)+".mp4";
   link.style.textDecoration = "none";
 
   const download = document.createElement("button");
@@ -243,8 +324,9 @@ function addClip(blob,index,topic,start,seconds){
   const copy = document.createElement("button");
   copy.type = "button";
   copy.textContent = "শিরোনাম + হ্যাশট্যাগ কপি";
+
   copy.onclick = async () => {
-    const text = title + "\n" + tags;
+    const text = title+"\n"+tags;
     try{
       await navigator.clipboard.writeText(text);
       copy.textContent = "কপি হয়েছে ✓";
@@ -261,35 +343,44 @@ function addClip(blob,index,topic,start,seconds){
 
   actions.append(link,copy);
   card.append(heading,player,titleText,tagText,info,actions);
+
+  if($("results").textContent === "এখানে তৈরি হওয়া ভিডিও দেখা যাবে。"){
+    $("results").textContent = "";
+  }
+  if($("results").textContent === "এখানে তৈরি হওয়া ভিডিও দেখা যাবে।"){
+    $("results").textContent = "";
+  }
   $("results").appendChild(card);
 }
 
-function unlink(name){
-  try{
-    if(engine) engine.FS("unlink",name);
-  }catch(e){}
-}
-
-$("makeBtn").addEventListener("click", async () => {
+$("makeBtn").addEventListener("click",async () => {
   if(busy) return;
 
   if(!selectedFile){
-    status("আগে একটি ভিডিও আপলোড করুন।");
+    status("আগে একটি ভিডিও নির্বাচন করুন।");
+    return;
+  }
+
+  if(!Number.isFinite(videoDuration) || videoDuration<=0){
+    status("ভিডিওর দৈর্ঘ্য পড়া হয়নি। একটু অপেক্ষা করুন।");
     return;
   }
 
   const seconds = Number($("duration").value);
   const count = Number($("count").value);
-  const height = Number($("resolution").value);
+  const resolution = Number($("resolution").value);
+  const fps = Number($("fps").value);
+  const platform = $("platform").value;
   const topic = $("topic").value || "Cartoon Shorts";
 
-  if(!Number.isFinite(videoDuration) || videoDuration < seconds){
-    status("ভিডিওটি নির্বাচিত ক্লিপের দৈর্ঘ্যের সমান বা বড় হতে হবে।");
+  if(videoDuration < seconds){
+    status("ভিডিওটি নির্বাচিত ক্লিপের দৈর্ঘ্যের চেয়ে ছোট।");
     return;
   }
 
   busy = true;
   $("makeBtn").disabled = true;
+  $("videoFile").disabled = true;
   $("bar").style.width = "0%";
   clearOutputs();
 
@@ -298,50 +389,77 @@ $("makeBtn").addEventListener("click", async () => {
   try{
     const ff = await loadFFmpeg();
 
+    const profiles = {
+      "tiktok":[9,16],
+      "facebook-reels":[9,16],
+      "youtube-shorts":[9,16],
+      "instagram-reels":[9,16],
+      "youtube-landscape":[16,9],
+      "facebook-feed":[4,5],
+      "instagram-square":[1,1]
+    };
+
+    const [ratioW,ratioH] = profiles[platform] || [9,16];
+
+    // 720p vertical = 720x1280; landscape = 1280x720.
+    let width,height;
+
+    if(ratioW === ratioH){
+      width = resolution;
+      height = resolution;
+    }else if(ratioW < ratioH){
+      width = Math.round((resolution*ratioW/ratioH)/2)*2;
+      height = resolution;
+    }else{
+      width = resolution;
+      height = Math.round((resolution*ratioH/ratioW)/2)*2;
+    }
+
     const extMatch = selectedFile.name.match(/\.([a-z0-9]{1,8})$/i);
     const ext = extMatch ? extMatch[1].toLowerCase() : "mp4";
-    inputName = "input." + ext;
+    inputName = "input_video."+ext;
 
-    const sizes = {
-      480:[854,480],
-      720:[1280,720],
-      1080:[1920,1080]
-    };
-    const [width,outHeight] = sizes[height];
+    unlinkFile(inputName);
 
-    unlink(inputName);
-    status("ভিডিও মেমোরিতে লোড হচ্ছে...");
-
-    ff.FS("writeFile",inputName,
-      new Uint8Array(await selectedFile.arrayBuffer()));
+    status("ভিডিও মেমোরিতে লোড হচ্ছে... বড় ফাইলে সময় লাগতে পারে।");
+    const bytes = new Uint8Array(await selectedFile.arrayBuffer());
+    ff.FS("writeFile",inputName,bytes);
 
     const maxStart = Math.max(0,videoDuration-seconds);
     const starts = [];
 
     for(let i=0;i<count;i++){
-      starts.push(count === 1 ? 0 : maxStart*i/(count-1));
-    }
-
-    // সব ক্লিপের কাজ একটি FFmpeg কমান্ডে চালানো হবে।
-    const args = [];
-
-    for(let i=0;i<count;i++){
-      args.push("-ss",starts[i].toFixed(3));
-      args.push("-i",inputName);
+      starts.push(count===1 ? 0 : maxStart*i/(count-1));
     }
 
     for(let i=0;i<count;i++){
-      const outputName = "short-" + (i+1) + ".mp4";
-      unlink(outputName);
+      const outputName = "short_"+(i+1)+".mp4";
+      unlinkFile(outputName);
 
-      args.push(
+      status(
+        "ক্লিপ "+(i+1)+"/"+count+" তৈরি হচ্ছে...\n"+
+        "শুরুর সময়: "+formatTime(starts[i])+
+        "\nফরম্যাট: "+platform+
+        " | "+width+"×"+height+
+        " | "+fps+" FPS"+
+        "\nএকটি ক্লিপ শেষ হওয়ার পর পরেরটি শুরু হবে। অপেক্ষা করুন।"
+      );
+
+      $("bar").style.width = ((i/count)*100)+"%";
+
+      // প্রতিটি কমান্ডের জন্য await: একই সময়ে দ্বিতীয় run() শুরু হয় না.
+      await ff.run(
+        "-ss",starts[i].toFixed(3),
+        "-i",inputName,
         "-t",String(seconds),
-        "-map",i+":v:0",
-        "-map",i+":a?",
+        "-map","0:v:0",
+        "-map","0:a?",
         "-vf",
-        "scale="+width+":"+outHeight+
+        "scale="+width+":"+height+
         ":force_original_aspect_ratio=increase,crop="+
-        width+":"+outHeight+",setsar=1,fps=30",
+        width+":"+height+
+        ",setsar=1,fps="+fps+",format=yuv420p",
+        "-r",String(fps),
         "-c:v","libx264",
         "-preset","ultrafast",
         "-crf","23",
@@ -353,50 +471,101 @@ $("makeBtn").addEventListener("click", async () => {
         "-movflags","+faststart",
         "-y",outputName
       );
-    }
 
-    status("সব ক্লিপ একসঙ্গে তৈরি হচ্ছে। অপেক্ষা করুন...");
-    $("bar").style.width = "15%";
+      const output = ff.FS("readFile",outputName);
 
-    // গুরুত্বপূর্ণ: পুরো প্রজেক্টে এই run() একবারই।
-    await ff.run(...args);
-
-    status("তৈরি হওয়া MP4 ফাইল পরীক্ষা করা হচ্ছে...");
-
-    for(let i=0;i<count;i++){
-      const outputName = "short-" + (i+1) + ".mp4";
-      const data = ff.FS("readFile",outputName);
-
-      if(!data || data.length < 1000){
-        throw new Error("ক্লিপ " + (i+1) + " তৈরি হয়নি বা ফাইল অসম্পূর্ণ।");
+      if(!output || output.length<1000){
+        throw new Error("ক্লিপ "+(i+1)+" তৈরি হয়নি বা ফাইল অসম্পূর্ণ।");
       }
 
       const signature = String.fromCharCode(
-        data[4],data[5],data[6],data[7]
+        output[4],output[5],output[6],output[7]
       );
 
       if(signature !== "ftyp"){
-        throw new Error("ক্লিপ " + (i+1) + " বৈধ MP4 নয়।");
+        throw new Error("ক্লিপ "+(i+1)+" সঠিক MP4 ফাইল নয়।");
       }
 
-      const blob = new Blob([data.slice().buffer],{type:"video/mp4"});
-      addClip(blob,i,topic,starts[i],seconds);
-      unlink(outputName);
+      const blob = new Blob([output.slice().buffer],{type:"video/mp4"});
 
-      $("bar").style.width = ((i+1)/count*100) + "%";
+      addClip(
+        blob,i,topic,starts[i],seconds,
+        platform,fps
+      );
+
+      unlinkFile(outputName);
+      $("bar").style.width = (((i+1)/count)*100)+"%";
     }
 
-    status("সম্পন্ন! প্রতিটি ক্লিপের MP4 ডাউনলোড বাটনে চাপ দিন।");
+    unlinkFile(inputName);
+    inputName = null;
+
+    status("সম্পন্ন! "+count+"টি ক্লিপ তৈরি হয়েছে। নিচে দেখে ডাউনলোড করুন।");
 
   }catch(error){
     console.error(error);
-    status("ভিডিও তৈরি করা যায়নি:\n"+
+    status(
+      "ভিডিও তৈরি করা যায়নি:\n"+
       (error && error.message ? error.message : String(error))+
-      "\n\nছোট ভিডিও ও 480p দিয়ে চেষ্টা করুন। আবার একই ত্রুটি হলে স্ক্রিনে দেখানো সম্পূর্ণ বার্তাটি পাঠান।");
+      "\n\nপেজ রিফ্রেশ করে ছোট ভিডিও ও 480p দিয়ে চেষ্টা করুন।"
+    );
+
+    if(engine){
+      try{ engine.exit(); }catch(e){}
+    }
+
+    engine = null;
+    engineReady = false;
+
   }finally{
-    unlink(inputName);
+    if(inputName) unlinkFile(inputName);
     busy = false;
     $("makeBtn").disabled = false;
+    $("videoFile").disabled = false;
+  }
+});
+
+$("aiBtn").addEventListener("click",async () => {
+  const prompt = $("aiPrompt").value.trim();
+  const ratio = $("aiPlatform").value;
+
+  if(!prompt){
+    $("aiStatus").textContent = "আগে আপনার ভিডিওর Prompt লিখুন।";
+    return;
+  }
+
+  const fullPrompt =
+    prompt+
+    "\nVideo aspect ratio: "+ratio+
+    ". Keep the composition suitable for this aspect ratio.";
+
+  // Open the site directly from the button press.
+  const opened = window.open(
+    "https://www.freevideoai.org/",
+    "_blank"
+  );
+
+  try{
+    await navigator.clipboard.writeText(fullPrompt);
+    $("aiStatus").textContent =
+      "Prompt কপি হয়েছে। "+(opened ? "নতুন ট্যাবে " : "")+
+      "AI সাইটে Prompt বক্সে পেস্ট করে Generate চাপুন।";
+  }catch(e){
+    const area = document.createElement("textarea");
+    area.value = fullPrompt;
+    document.body.appendChild(area);
+    area.select();
+    const ok = document.execCommand("copy");
+    area.remove();
+
+    $("aiStatus").textContent = ok
+      ? "Prompt কপি হয়েছে। AI সাইটে পেস্ট করুন।"
+      : "স্বয়ংক্রিয় কপি হয়নি। Prompt বক্সের লেখা নিজে কপি করে AI সাইটে পেস্ট করুন।";
+  }
+
+  if(!opened){
+    $("aiStatus").textContent +=
+      " সাইট না খুললে নিচের সরাসরি লিংকে চাপ দিন।";
   }
 });
 </script>
